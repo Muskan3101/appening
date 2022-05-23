@@ -18,7 +18,7 @@ class ListScreen extends StatelessWidget {
         builder: (context,snapshot){
           if(!snapshot.hasData){
             return const Center(
-              child: Text("No data found")
+              child: CircularProgressIndicator()
             );
           }return ListView(
             children: snapshot.data!.map((value) => ListTile(

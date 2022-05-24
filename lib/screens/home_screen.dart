@@ -90,8 +90,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           if(valid){
                             return submitData() ;
                           }
+                          return ;
                           },
-
                         minWidth: double.infinity,
                         height: 48,
                         color: const Color(0xFF4B94FF),
@@ -119,13 +119,11 @@ class _HomeScreenState extends State<HomeScreen> {
         {"name": fullNameController.text, "job": jobNameController.text});
     var response = await http.post(uri, body: jsonData);
     print("data inserted");
-    print(response.body);
+    // print(response.body);
     if (response.statusCode == 201) {
       if (jsonData.isNotEmpty) {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => const ListScreen()));
-      } else {
-        const CircularProgressIndicator();
       }
     }
   }

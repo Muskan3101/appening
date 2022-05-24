@@ -11,6 +11,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _globalFormKey = GlobalKey<FormState>();
+  var fullName = " ";
+  var jobName = " ";
   TextEditingController fullNameController = TextEditingController();
   TextEditingController jobNameController = TextEditingController();
 
@@ -21,83 +24,109 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: const Color(0xFF4B94FF),
         ),
         body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 20,right: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                const SizedBox(
-                  height: 40,
-                ),
-                // inputFile(label: "Full Name",controller: fullNameController),
-                // inputFile(label: "Job Name",controller: jobNameController),
-                const Text("FullName"),
-                const SizedBox(
-                  height: 5,
-                ),
-                TextField(
-                  controller: fullNameController,
-                  decoration: const InputDecoration(
-                    contentPadding:
-                    EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(9))),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                const Text("Job Name"),
-                const SizedBox(
-                  height: 5,
-                ),
-                TextField(
-                  controller: jobNameController,
-                  decoration: const InputDecoration(
-                    contentPadding:
-                    EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(9))),
-                  ),
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.5,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: MaterialButton(
-                    onPressed: () {
-                      submitData();
-                    },
-                    minWidth: double.infinity,
-                    height: 48,
-                    color: const Color(0xFF4B94FF),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    child: const Text(
-                      "Submit",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Form(
+                key: _globalFormKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    const SizedBox(
+                      height: 40,
                     ),
-                  ),
-                )
-              ],
-            ),
-          )
+                    const Text("FullName"),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        fullName = value!;
+                        if (value.isEmpty) {
+                          return "Please fill your full name";
+                        }
+                        return null;
+                      },
+                      controller: fullNameController,
+                      decoration: const InputDecoration(
+                        contentPadding:
+                        EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(9))),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Text("Job Name"),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    TextFormField(
+                      validator: (value){
+                        jobName = value!;
+                        if(value.isEmpty){
+                          return "Please fill your Job name";
+                        }return null;
+                      },
+                      controller: jobNameController,
+                      decoration: const InputDecoration(
+                        contentPadding:
+                        EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(9))),
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .height * 0.5,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: MaterialButton(
+                        onPressed: () {
+                          var valid = _globalFormKey.currentState!.validate();
+                          if(valid){
+                            return submitData() ;
+                          }
+                          },
+
+                        minWidth: double.infinity,
+                        height: 48,
+                        color: const Color(0xFF4B94FF),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        child: const Text(
+                          "Submit",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            )
         ));
   }
-  void submitData() async{
-    var uri = Uri.parse("https://email-pass-auth-example-default-rtdb.firebaseio.com/users.json");
-    var jsonData = json.encode({"name":fullNameController.text,"job":jobNameController.text});
-    var response = await http.post(uri,body: jsonData);
+
+  void submitData() async {
+    var uri = Uri.parse("https://reqres.in/api/users");
+    var jsonData = json.encode(
+        {"name": fullNameController.text, "job": jobNameController.text});
+    var response = await http.post(uri, body: jsonData);
     print("data inserted");
     print(response.body);
-    if(jsonData.isNotEmpty){
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>const ListScreen()));
-    }else{
-      const CircularProgressIndicator();
+    if (response.statusCode == 201) {
+      if (jsonData.isNotEmpty) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const ListScreen()));
+      } else {
+        const CircularProgressIndicator();
+      }
     }
   }
 }

@@ -33,10 +33,10 @@ class ListScreen extends StatelessWidget {
     );
   }
   Future <List<Users>> getListOfUsers() async{
-    var uri = Uri.parse("https://email-pass-auth-example-default-rtdb.firebaseio.com/users.json");
+    var uri = Uri.parse("https://reqres.in/api/users?page=2");
     var response = await http.get(uri);
     // print(response.body);
-    // print(response.statusCode);
+    print(response.statusCode);
     if(response.statusCode == 200){
       // print(response.body);
       final data = json.decode(response.body);

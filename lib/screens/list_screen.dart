@@ -30,11 +30,11 @@ class _ListScreenState extends State<ListScreen> {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final data2 = data['data'];
-      print(data2);
+      // print(data2);
       List<Users> userList = data2.map<Users>((map) {
         return Users.fromJson(map);
       }).toList();
-      print(userList);
+      // print(userList);
       return userList;
     } else {
       throw Exception("Error Found");

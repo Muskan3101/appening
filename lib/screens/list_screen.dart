@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:appening/model_Class.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -29,16 +27,16 @@ class _ListScreenState extends State<ListScreen> {
     var response = await http.get(uri);
     // print(response.body);
     // print(response.statusCode);
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      final data2= data['data'];
+      final data2 = data['data'];
       print(data2);
-      List<Users> userList = data2.map<Users>((map){
+      List<Users> userList = data2.map<Users>((map) {
         return Users.fromJson(map);
       }).toList();
       print(userList);
       return userList;
-    }else{
+    } else {
       throw Exception("Error Found");
     }
   }
@@ -49,24 +47,31 @@ class _ListScreenState extends State<ListScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView(
-              children: snapshot.data!.map((value) =>
-                  ListTile(
-                    title: Text(value.first_name + " " + value.last_name,style: const TextStyle(fontSize: 16,fontWeight: FontWeight.w500,),),
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          "${value.avatar}"
-                      ),
-                    ),
-                    subtitle: Text(value.email,style: const TextStyle(fontSize: 12,fontWeight: FontWeight.w400),),
-                  )).toList(),
+              children: snapshot.data!
+                  .map((value) => ListTile(
+                        title: Text(
+                          value.first_name + " " + value.last_name,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        leading: CircleAvatar(
+                          backgroundImage: NetworkImage("${value.avatar}"),
+                        ),
+                        subtitle: Text(
+                          value.email,
+                          style: const TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.w400),
+                        ),
+                      ))
+                  .toList(),
             );
-          }
-          else {
+          } else {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
-        }
-    );
+        });
   }
 }
